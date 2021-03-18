@@ -20,11 +20,12 @@ C++       = g++
 #
 #
 #
-CPPFILES = main.cpp
+CPPFILES = main.cpp \
+           lib/DatabaseDbf/Database.cpp
 CFILES = 
 
 #
-CCFLAGS = -O2
+CCFLAGS = -O2 -I./include
 #
 TARGET   = readdbf
 #

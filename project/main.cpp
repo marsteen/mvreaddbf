@@ -1,62 +1,16 @@
 
 
 #include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include <map>
-#include <cstring>
+#include <DatabaseDbf/Database.h>
+
+
 
 
 //typedef std::map<std::string, std::string> Trecord;
 
 
 
-typedef std::vector<std::string> Trecord;
-
-static std::vector<Trecord> database;
-
-using namespace std;
-
-
-#pragma pack (push, 1)
-struct SDbfHeader
-{
-    uint8_t   mBase;
-    uint8_t   mDateLastUpdate[3];
-    uint32_t  mNumRecords;
-    uint16_t  mBytesHeader;
-    uint16_t  mBytesRecord;
-    uint8_t   mReseved01[2];
-    uint8_t   mFlagTransaction;
-    uint8_t   mEncryption;
-    uint8_t   mDOSmultiuser[12];
-    uint8_t   mFlagMdxFile;
-    uint8_t   mLanguageDriverID;
-    uint8_t   mReseved02[2];    
-};
-#pragma pack(pop)
-
-#pragma pack (push, 1)
-struct SDbfFieldDescriptor
-{
-    SDbfFieldDescriptor()
-    {
-        memset(this, 0, sizeof(SDbfFieldDescriptor));
-    }
-    char      mFieldname[11];
-    char      mFieldType;
-    uint8_t   mReseved01[4];
-    uint8_t   mFieldLength;
-    uint8_t   mFieldCount;
-    uint8_t   mWorkAreaID;
-    uint8_t   mExample;
-    uint8_t   mReserved02[10];
-    uint8_t   mFlagMdx;    
-};
-#pragma pack(pop)
-
-vector<SDbfFieldDescriptor> fieldVec;
+//vector<SDbfFieldDescriptor> fieldVec;
 
 /*
 0–10 	11 bytes 	Field name in ASCII (zero-filled)
@@ -72,9 +26,19 @@ vector<SDbfFieldDescriptor> fieldVec;
 
 int main(int argc, char* argv[])
 {
+    
+
     if (argc == 2)
     {
-        std::vector<int> fieldlenVec;
+        
+        DatabaseDbf::Database dbase;
+        if (dbase.openFile(argv[1]))
+        {
+            dbase.showAll(3);
+            dbase.closeFile();
+            
+        }
+        /*
         //fstream fs(Filename, ios::in | ios::binary);
         std::ifstream dbffile(argv[1], std::ios::binary);
         if (dbffile.good())
@@ -87,6 +51,7 @@ int main(int argc, char* argv[])
              
              bool enddesc = false;
              int fieldnum;
+             int recordLength = 0;
              for (fieldnum = 0; !enddesc; fieldnum++)
              {
                 char fielddesc[32];
@@ -108,14 +73,14 @@ int main(int argc, char* argv[])
                         << " type=" << dbffielddesc->mFieldType 
                         << " length=" << (int) dbffielddesc->mFieldLength << endl;
                         
-                    
-                    fieldlenVec.push_back(dbffielddesc->mFieldLength);    
-                    fieldVec.push_back(*dbffielddesc);
-                    
+                    recordLength += (int) dbffielddesc->mFieldLength;                                                            
+                    fieldVec.push_back(*dbffielddesc);                    
                 }
              }
              
              cout << "mNumRecords=" << dbfheader.mNumRecords << endl;
+             cout << "recordLength=" << recordLength << " bytes" << endl;
+             
              for (int i = 0; i < dbfheader.mNumRecords; i++)
              {
                   char dummy;
@@ -136,6 +101,7 @@ int main(int argc, char* argv[])
                   database.push_back(record);
              }             
         }
+        */
     }
     
     return 0;
